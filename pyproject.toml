@@ -94,6 +94,7 @@ triton = "3.0.0"
 typing-extensions = "4.12.2"
 urllib3 = "2.2.2"
 vector-quantize-pytorch = "1.16.1"
+soundfile = "^0.12.1"
 
 
 [build-system]
