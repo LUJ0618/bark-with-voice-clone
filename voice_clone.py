@@ -14,9 +14,9 @@ from scipy.io.wavfile import write as write_wav
 device = 'cuda' # or 'cpu'
 model = load_codec_model(use_gpu=True if device == 'cuda' else False)
 
-hubert_manager = HuBERTManager()
-hubert_manager.make_sure_hubert_installed()
-hubert_manager.make_sure_tokenizer_installed()
+# hubert_manager = HuBERTManager()
+# hubert_manager.make_sure_hubert_installed()
+# hubert_manager.make_sure_tokenizer_installed()
 
 # Load the HuBERT model
 hubert_model = CustomHubert(checkpoint_path='data/models/hubert/hubert.pt').to(device)
@@ -24,7 +24,7 @@ hubert_model = CustomHubert(checkpoint_path='data/models/hubert/hubert.pt').to(d
 # Load the CustomTokenizer model
 tokenizer = CustomTokenizer.load_from_checkpoint('data/models/hubert/tokenizer.pth').to(device)  # Automatically uses the right layers
 
-audio_filepath = 'ref_actor01_01.wav' # the audio you want to clone (under 13 seconds)
+audio_filepath = './samples_ref/ref_KSS_02.wav' # the audio you want to clone (under 13 seconds)
 wav, sr = torchaudio.load(audio_filepath)
 wav = convert_audio(wav, sr, model.sample_rate, model.channels)
 wav = wav.to(device)
@@ -49,7 +49,8 @@ output_path = 'bark/assets/prompts/' + voice_name + '.npz'
 np.savez(output_path, fine_prompt=codes, coarse_prompt=codes[:2, :], semantic_prompt=semantic_tokens)
 
 # Enter your prompt and speaker here
-text_prompt = "Hello. This is the Intelligent Image Processing Center at the Korea Electronics Technology Institute."
+text_prompt = "안녕하세요. 한국전자기술연구원 지능형영상처리센터입니다."
+# "Hello. This is the Intelligent Image Processing Center at the Korea Electronics Technology Institute."
 voice_name = "clone_actor01_01" # use your custom voice name here if you have one
 
 # download and load all models
@@ -64,10 +65,10 @@ preload_models(
     force_reload=False,
     path="models"
 )
-
+# history_prompt=voice_name,
 # simple generation
-audio_array = generate_audio(text_prompt, history_prompt=voice_name, text_temp=0.7, waveform_temp=0.7)
+audio_array = generate_audio(text_prompt, history_prompt="ko_speaker_1", text_temp=0.7, waveform_temp=0.7)
 
 # save audio
-filepath = "/samples_cloned/bark_ko_actor01_01.wav" # change this to your desired output path
+filepath = "./samples_cloned/bark_ko_speaker_01.wav" # change this to your desired output path
 write_wav(filepath, SAMPLE_RATE, audio_array)
